@@ -9,6 +9,10 @@ namespace EastFive.Pdf
     {
         public static Stream ConvertHtmlStringToPdf(this string htmlString)
         {
+            htmlString = htmlString.Replace("\r", "").Replace("\n", "");
+
+            //htmlString = File.ReadAllText(@"C:\Code\AffirmHealth\EastFive.Pdf\EastFive.Pdf\junk.txt");
+
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(htmlString);
             var pdfStream = document.ToPDF();
@@ -18,6 +22,7 @@ namespace EastFive.Pdf
             //    pdfStream.Seek(0, SeekOrigin.Begin);
             //    pdfStream.CopyTo(fileStream);
             //}
+
             return pdfStream;
         }
 
@@ -35,5 +40,7 @@ namespace EastFive.Pdf
             doc.Save(output);
             return output;
         }
+
+        
     }
 }
