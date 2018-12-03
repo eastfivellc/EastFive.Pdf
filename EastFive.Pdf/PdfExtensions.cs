@@ -9,8 +9,6 @@ namespace EastFive.Pdf
     {
         public static Stream ConvertHtmlStringToPdf(this string htmlString)
         {
-            htmlString = htmlString.Replace("\r", "").Replace("\n", "");
-
             //htmlString = File.ReadAllText(@"C:\Code\AffirmHealth\EastFive.Pdf\EastFive.Pdf\junk.txt");
 
             HtmlDocument document = new HtmlDocument();
