@@ -9,17 +9,19 @@ namespace EastFive.Pdf
     {
         public static Stream ConvertHtmlStringToPdf(this string htmlString)
         {
-            //htmlString = File.ReadAllText(@"C:\Code\AffirmHealth\EastFive.Pdf\EastFive.Pdf\junk.txt");
-
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(htmlString);
             var pdfStream = document.ToPDF();
 
+
+            // For debugging ---
             //using (var fileStream = File.Create("C:\\temp\\outputpdf.pdf"))
             //{
             //    pdfStream.Seek(0, SeekOrigin.Begin);
             //    pdfStream.CopyTo(fileStream);
             //}
+            //pdfStream.Seek(0, SeekOrigin.Begin);
+
 
             return pdfStream;
         }
