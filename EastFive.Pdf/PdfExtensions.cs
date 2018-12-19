@@ -13,15 +13,14 @@ namespace EastFive.Pdf
             document.LoadHtml(htmlString);
             var pdfStream = document.ToPDF();
 
-
             // For debugging ---
+            //File.WriteAllText("c:\\temp\\outputhtml.html", htmlString);
             //using (var fileStream = File.Create("C:\\temp\\outputpdf.pdf"))
             //{
             //    pdfStream.Seek(0, SeekOrigin.Begin);
             //    pdfStream.CopyTo(fileStream);
             //}
             //pdfStream.Seek(0, SeekOrigin.Begin);
-
 
             return pdfStream;
         }
