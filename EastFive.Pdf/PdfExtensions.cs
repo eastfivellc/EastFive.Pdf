@@ -20,7 +20,7 @@ namespace EastFive.Pdf
             //    pdfStream.Seek(0, SeekOrigin.Begin);
             //    pdfStream.CopyTo(fileStream);
             //}
-            //pdfStream.Seek(0, SeekOrigin.Begin);
+            pdfStream.Seek(0, SeekOrigin.Begin);
 
             return pdfStream;
         }
