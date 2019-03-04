@@ -2,6 +2,8 @@
 using System;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using HtmlAgilityPack;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 
 namespace EastFive.Pdf
 {
@@ -40,6 +42,33 @@ namespace EastFive.Pdf
             return output;
         }
 
-        
+        public static byte[] Concat(this byte[] pdf1, byte[] pdf2)
+        {
+            PdfDocument outputDocument = new PdfDocument();
+
+            var stream1 = new MemoryStream(pdf1);
+            var stream2 = new MemoryStream(pdf2);
+            var doc1 = PdfReader.Open(stream1);
+            var doc2 = PdfReader.Open(stream2);
+
+            foreach (var page in doc2.Pages)
+            {
+                doc1.AddPage(page);
+            }
+
+            var concatenatedStream = new MemoryStream();
+            doc1.Save(concatenatedStream);
+            return concatenatedStream.ToBytes();
+        }
+
+        public static byte[] Concat(this byte[][] pdfs)
+        {
+            var concatenatedPdfs = new byte[] { };
+            foreach (var pdf in pdfs)
+            {
+                concatenatedPdfs = concatenatedPdfs.Concat(pdf);
+            }
+            return concatenatedPdfs;
+        }
     }
 }
