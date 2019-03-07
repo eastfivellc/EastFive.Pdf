@@ -46,10 +46,22 @@ namespace EastFive.Pdf
         {
             PdfDocument outputDocument = new PdfDocument();
 
+            var pdf1HasBytes = pdf1.Length > 0;
+            var pdf2HasBytes = pdf2.Length > 0;
+
+            if (!pdf1HasBytes && !pdf2HasBytes)
+                return new byte[] { };
+
+            if (!pdf1HasBytes)
+                return pdf2;
+
+            if (!pdf2HasBytes)
+                return pdf1;
+
             var stream1 = new MemoryStream(pdf1);
             var stream2 = new MemoryStream(pdf2);
-            var doc1 = PdfReader.Open(stream1);
-            var doc2 = PdfReader.Open(stream2);
+            var doc1 = PdfReader.Open(stream1, PdfDocumentOpenMode.Import);
+            var doc2 = PdfReader.Open(stream2, PdfDocumentOpenMode.Import);
 
             foreach (var page in doc2.Pages)
             {
