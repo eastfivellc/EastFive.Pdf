@@ -33,6 +33,8 @@ namespace EastFive.Pdf
             switch (name)
             {
                 case "arial":
+                case "segoe ui":
+                default:
                     if (isBold)
                     {
                         if (isItalic)
