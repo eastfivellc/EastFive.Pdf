@@ -73,7 +73,7 @@ namespace EastFive.Pdf
             return concatenatedStream.ToBytes();
         }
 
-        public static byte[] Concat(this byte[][] pdfs)
+        public static byte[] ConcatPdfs(this byte[][] pdfs)
         {
             var concatenatedPdfs = new byte[] { };
             foreach (var pdf in pdfs)
