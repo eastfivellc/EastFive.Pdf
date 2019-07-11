@@ -4,11 +4,43 @@ using TheArtOfDev.HtmlRenderer.PdfSharp;
 using HtmlAgilityPack;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using PdfSharp.Drawing;
 
 namespace EastFive.Pdf
 {
     public static class PdfExtensions
     {
+        public static Stream CreatePDFFromImages(this byte[][] images)
+        {
+            const double margin = 50d;
+
+            PdfDocument document = new PdfDocument();
+
+            foreach (var imageBytes in images)
+            {
+                PdfPage page = document.AddPage();
+
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+
+                Stream imageStream = new MemoryStream(imageBytes);
+                XImage image = XImage.FromStream(imageStream);
+                gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
+            }
+
+            var pdfStream = new MemoryStream();
+            document.Save(pdfStream);
+
+            // For debugging ---
+            //using (var fileStream = File.Create("C:\\temp\\outputpdf.pdf"))
+            //{
+            //    pdfStream.Seek(0, SeekOrigin.Begin);
+            //    pdfStream.CopyTo(fileStream);
+            //}
+            pdfStream.Seek(0, SeekOrigin.Begin);
+
+            return pdfStream;
+        }
+
         public static Stream ConvertHtmlStringToPdf(this string htmlString)
         {
             HtmlDocument document = new HtmlDocument();
