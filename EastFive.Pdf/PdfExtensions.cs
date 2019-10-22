@@ -5,6 +5,9 @@ using HtmlAgilityPack;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Drawing;
+using EastFive.Linq.Async;
+using EastFive.Extensions;
+using System.Threading.Tasks;
 
 namespace EastFive.Pdf
 {
@@ -80,6 +83,28 @@ namespace EastFive.Pdf
             var output = new MemoryStream();
             doc.Save(output);
             return output;
+        }
+
+        public static async Task<byte[]> AggregatePdfsAsync(this IEnumerableAsync<byte[]> pdfs)
+        {
+            var composedPdf = await pdfs.AggregateAsync(
+                new PdfDocument(),
+                (outputPdf, pdfBytes) =>
+                {
+                    if (pdfBytes.IsDefaultNullOrEmpty())
+                        return outputPdf;
+                    
+                    var stream = new MemoryStream(pdfBytes);
+                    var doc = PdfReader.Open(stream, PdfDocumentOpenMode.Import);
+                    foreach (var page in doc.Pages)
+                    {
+                        outputPdf.AddPage(page);
+                    }
+                    return outputPdf;
+                });
+            var concatenatedStream = new MemoryStream();
+            composedPdf.Save(concatenatedStream);
+            return concatenatedStream.ToBytes();
         }
 
         public static byte[] Concat(this byte[] pdf1, byte[] pdf2)
