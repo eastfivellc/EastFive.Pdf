@@ -70,16 +70,7 @@ namespace EastFive.Pdf
             };
             config.SetMargins(20);
 
-            PdfDocument doc = null;
-            try
-            {
-                doc = PdfGenerator.GeneratePdf(htmlDocument.ParsedText, config);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
+            PdfDocument doc = PdfGenerator.GeneratePdf(htmlDocument.ParsedText, config);
             var output = new MemoryStream();
             doc.Save(output);
             return output;
