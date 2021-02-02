@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.30" />
+    <PackageReference Include="HtmlRenderer.PdfSharp" Version="1.5.1-beta1" />
+    <PackageReference Include="PdfSharp" Version="1.51.5185-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EastFive.Pdf\Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EastFive.Core\EastFive.Core.csproj" />
+  </ItemGroup>
+
+</Project>

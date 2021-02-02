@@ -95,10 +95,10 @@ namespace EastFive.Pdf
                 });
             var concatenatedStream = new MemoryStream();
             composedPdf.Save(concatenatedStream);
-            return concatenatedStream.ToBytes();
+            return await concatenatedStream.ToBytesAsync();
         }
 
-        public static byte[] Concat(this byte[] pdf1, byte[] pdf2)
+        public static async Task<byte[]> ConcatAsync(this byte[] pdf1, byte[] pdf2)
         {
             PdfDocument outputDocument = new PdfDocument();
 
@@ -126,15 +126,15 @@ namespace EastFive.Pdf
 
             var concatenatedStream = new MemoryStream();
             doc1.Save(concatenatedStream);
-            return concatenatedStream.ToBytes();
+            return await concatenatedStream.ToBytesAsync();
         }
 
-        public static byte[] ConcatPdfs(this byte[][] pdfs)
+        public static async Task<byte[]> ConcatPdfs(this byte[][] pdfs)
         {
             var concatenatedPdfs = new byte[] { };
             foreach (var pdf in pdfs)
             {
-                concatenatedPdfs = concatenatedPdfs.Concat(pdf);
+                concatenatedPdfs = await concatenatedPdfs.ConcatAsync(pdf);
             }
             return concatenatedPdfs;
         }
