@@ -1,13 +1,12 @@
 ﻿using System.IO;
-using System;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
 using HtmlAgilityPack;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using PdfSharp.Drawing;
 using EastFive.Linq.Async;
 using EastFive.Extensions;
 using System.Threading.Tasks;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Drawing;
+using VetCV.HtmlRendererCore.PdfSharpCore;
+using PdfSharpCore.Pdf.IO;
 
 namespace EastFive.Pdf
 {
@@ -26,7 +25,7 @@ namespace EastFive.Pdf
                 XGraphics gfx = XGraphics.FromPdfPage(page);
 
                 Stream imageStream = new MemoryStream(imageBytes);
-                XImage image = XImage.FromStream(imageStream);
+                XImage image = XImage.FromStream(() => imageStream);
                 gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
             }
 
@@ -66,7 +65,7 @@ namespace EastFive.Pdf
         {
             var config = new PdfGenerateConfig
             {
-                PageSize = PdfSharp.PageSize.A4
+                PageSize = PdfSharpCore.PageSize.A4
             };
             config.SetMargins(20);
 

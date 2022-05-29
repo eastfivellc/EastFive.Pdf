@@ -1,11 +1,7 @@
-﻿using PdfSharp.Fonts;
+﻿using PdfSharpCore.Fonts;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EastFive.Pdf
 {
@@ -92,6 +88,8 @@ namespace EastFive.Pdf
         }
 
         internal static PDFFontResolver OurGlobalFontResolver = null;
+
+        public string DefaultFontName => throw new NotImplementedException();
 
         /// <summary>
         /// Ensure the font resolver is only applied once (or an exception is thrown)
