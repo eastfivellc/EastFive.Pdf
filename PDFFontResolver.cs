@@ -44,7 +44,7 @@ namespace EastFive.Pdf
 
             // We pass all other font requests to the default handler.
             // When running on a web server without sufficient permission, you can return a default font at this stage.
-            return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+            //return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
         }
 
         public byte[] GetFont(string faceName)
