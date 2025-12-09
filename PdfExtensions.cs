@@ -7,6 +7,8 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Drawing;
 using VetCV.HtmlRendererCore.PdfSharpCore;
 using PdfSharpCore.Pdf.IO;
+using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace EastFive.Pdf
 {
@@ -25,6 +27,9 @@ namespace EastFive.Pdf
                 XGraphics gfx = XGraphics.FromPdfPage(page);
 
                 Stream imageStream = new MemoryStream(imageBytes);
+                if (ImageSource.ImageSourceImpl == null)
+                    ImageSource.ImageSourceImpl = new ImageSharp3CompatibleImageSource<Rgba32>();
+
                 XImage image = XImage.FromStream(() => imageStream);
                 gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
             }
