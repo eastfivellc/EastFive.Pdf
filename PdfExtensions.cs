@@ -14,22 +14,21 @@ namespace EastFive.Pdf
 {
     public static class PdfExtensions
     {
-        public static Stream CreatePDFFromImages(this byte[][] images)
+        static PdfExtensions()
         {
-            const double margin = 50d;
+            if (ImageSource.ImageSourceImpl == null)
+                    ImageSource.ImageSourceImpl = new ImageSharp3CompatibleImageSource<Rgba32>();
+        }
 
+        public static Stream CreatePDFFromImages(this byte[][] images, int margin = 0)
+        {
             PdfDocument document = new PdfDocument();
 
             foreach (var imageBytes in images)
             {
                 PdfPage page = document.AddPage();
-
                 XGraphics gfx = XGraphics.FromPdfPage(page);
-
                 Stream imageStream = new MemoryStream(imageBytes);
-                if (ImageSource.ImageSourceImpl == null)
-                    ImageSource.ImageSourceImpl = new ImageSharp3CompatibleImageSource<Rgba32>();
-
                 XImage image = XImage.FromStream(() => imageStream);
                 gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
             }
@@ -48,11 +47,11 @@ namespace EastFive.Pdf
             return pdfStream;
         }
 
-        public static Stream ConvertHtmlStringToPdf(this string htmlString)
+        public static Stream ConvertHtmlStringToPdf(this string htmlString, int margin = 20)
         {
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(htmlString);
-            var pdfStream = document.ToPDF();
+            var pdfStream = document.ToPDF(margin);
 
             // For debugging ---
             //File.WriteAllText("c:\\temp\\outputhtml.html", htmlString);
@@ -66,13 +65,13 @@ namespace EastFive.Pdf
             return pdfStream;
         }
 
-        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument)
+        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument, int margin = 20)
         {
             var config = new PdfGenerateConfig
             {
                 PageSize = PdfSharpCore.PageSize.A4
             };
-            config.SetMargins(20);
+            config.SetMargins(margin);
 
             PdfDocument doc = PdfGenerator.GeneratePdf(htmlDocument.ParsedText, config);
             var output = new MemoryStream();
