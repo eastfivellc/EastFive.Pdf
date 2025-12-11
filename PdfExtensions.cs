@@ -20,34 +20,29 @@ namespace EastFive.Pdf
                     ImageSource.ImageSourceImpl = new ImageSharp3CompatibleImageSource<Rgba32>();
         }
 
-        public static Stream CreatePDFFromImages(this byte[][] images, int margin = 0)
+        public static async Task<byte[]> AggregateImagesAsync(this IEnumerableAsync<byte[]> images, int margin = 0)
         {
-            PdfDocument document = new PdfDocument();
+            var composedPdf = await images.AggregateAsync(
+                new PdfDocument(),
+                (outputPdf, imageBytes) =>
+                {
+                    if (imageBytes.IsDefaultNullOrEmpty())
+                        return outputPdf;
+                    
+                    PdfPage page = outputPdf.AddPage();
+                    XGraphics gfx = XGraphics.FromPdfPage(page);
+                    Stream imageStream = new MemoryStream(imageBytes);
+                    XImage image = XImage.FromStream(() => imageStream);
+                    gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
+                    return outputPdf;
+                });
 
-            foreach (var imageBytes in images)
-            {
-                PdfPage page = document.AddPage();
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-                Stream imageStream = new MemoryStream(imageBytes);
-                XImage image = XImage.FromStream(() => imageStream);
-                gfx.DrawImage(image, margin, margin, page.Width - margin, page.Height - margin);
-            }
-
-            var pdfStream = new MemoryStream();
-            document.Save(pdfStream);
-
-            // For debugging ---
-            //using (var fileStream = File.Create("C:\\temp\\outputpdf.pdf"))
-            //{
-            //    pdfStream.Seek(0, SeekOrigin.Begin);
-            //    pdfStream.CopyTo(fileStream);
-            //}
-            pdfStream.Seek(0, SeekOrigin.Begin);
-
-            return pdfStream;
+            var concatenatedStream = new MemoryStream();
+            composedPdf.Save(concatenatedStream);
+            return await concatenatedStream.ToBytesAsync();
         }
 
-        public static Stream ConvertHtmlStringToPdf(this string htmlString, int margin = 20)
+        public static Stream ConvertHtmlStringToPdf(this string htmlString, int margin = 0)
         {
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(htmlString);
@@ -65,7 +60,7 @@ namespace EastFive.Pdf
             return pdfStream;
         }
 
-        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument, int margin = 20)
+        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument, int margin = 0)
         {
             var config = new PdfGenerateConfig
             {
