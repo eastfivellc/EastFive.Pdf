@@ -9,6 +9,7 @@ using VetCV.HtmlRendererCore.PdfSharpCore;
 using PdfSharpCore.Pdf.IO;
 using MigraDocCore.DocumentObjectModel.MigraDoc.DocumentObjectModel.Shapes;
 using SixLabors.ImageSharp.PixelFormats;
+using PdfSharpCore;
 
 namespace EastFive.Pdf
 {
@@ -42,11 +43,13 @@ namespace EastFive.Pdf
             return await concatenatedStream.ToBytesAsync();
         }
 
-        public static Stream ConvertHtmlStringToPdf(this string htmlString, int margin = 0)
+        public static Stream ConvertHtmlStringToPdf(this string htmlString, 
+            PageSize pageSize = PdfSharpCore.PageSize.Letter,
+            int margin = 0)
         {
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(htmlString);
-            var pdfStream = document.ToPDF(margin);
+            var pdfStream = document.ToPDF(pageSize, margin);
 
             // For debugging ---
             //File.WriteAllText("c:\\temp\\outputhtml.html", htmlString);
@@ -60,11 +63,13 @@ namespace EastFive.Pdf
             return pdfStream;
         }
 
-        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument, int margin = 0)
+        public static Stream ToPDF(this HtmlAgilityPack.HtmlDocument htmlDocument, 
+            PageSize pageSize = PdfSharpCore.PageSize.Letter, 
+            int margin = 0)
         {
             var config = new PdfGenerateConfig
             {
-                PageSize = PdfSharpCore.PageSize.A4
+                PageSize = pageSize,
             };
             config.SetMargins(margin);
 
