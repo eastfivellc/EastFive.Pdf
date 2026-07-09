@@ -82,7 +82,7 @@ namespace EastFive.Pdf
 
                 int count = (int)stream.Length;
                 byte[] data = new byte[count];
-                stream.Read(data, 0, count);
+                stream.ReadExactly(data);
                 return data;
             }
         }
